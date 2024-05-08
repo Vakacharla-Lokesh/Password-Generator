@@ -1,7 +1,12 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ButtonGroup;
@@ -64,6 +69,7 @@ public class Choice_GUI extends JFrame implements ActionListener{
             }
             else if(ch4.isSelected()){
                 dispose();
+                System.exit(0);
             }
         }
     }
@@ -80,7 +86,11 @@ public class Choice_GUI extends JFrame implements ActionListener{
         pass_field.setEchoChar('*');
         JButton check = new JButton("Check");
         JLabel Strength = new JLabel();
-        JLabel filler = new JLabel("\t");
+        JButton back_Button = new JButton("Back");
+        back_Button.addActionListener((ae) -> {
+            temp.dispose();
+            fr_ref.setVisible(true);
+        });
         check.addActionListener((ae) ->{
             if(pass_field.getPassword().length == 0){
                 Strength.setText("Enter Password First.");
@@ -104,7 +114,7 @@ public class Choice_GUI extends JFrame implements ActionListener{
         temp.add(pass_field);
 
         temp.add(check);
-        temp.add(filler);
+        temp.add(back_Button);
 
         temp.add(Strength);
 
@@ -118,14 +128,15 @@ public class Choice_GUI extends JFrame implements ActionListener{
         temp.setSize(350, 350);
         temp.setLayout(new BorderLayout());
 
-        JTextArea msg = new JTextArea("-Use a minimum password length of 8 or more characters if permitted."+
-        "\n-Include lowercase and uppercase alphabetic characters, numbers and symbols if permitted."+
-        "\n-Generate passwords randomly where feasible."+
-        "\n-Avoid using the same password twice (e.g., across multiple user accounts and/or software systems)."+
-        "\n-Avoid character repetition, keyboard patterns, dictionary words, letter or number sequences, usernames, relative or pet names, romantic links (current or past) and biographical information (e.g., ID numbers, ancestors' names or dates)."+
-        "\n-Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user."+
-        "\n-Do not use passwords which consist wholly of any simple combination of the aforementioned weak components.");
+        JTextArea msg = new JTextArea("-> Use a minimum password length of 8 or more characters if permitted."+
+        "\n-> Include lowercase and uppercase alphabetic characters, numbers and symbols if permitted."+
+        "\n-> Generate passwords randomly where feasible."+
+        "\n-> Avoid using the same password twice (e.g., across multiple user accounts and/or software systems)."+
+        "\n-> Avoid character repetition, keyboard patterns, dictionary words, letter or number sequences, usernames, relative or pet names, romantic links (current or past) and biographical information (e.g., ID numbers, ancestors' names or dates)."+
+        "\n-> Avoid using information that the user's colleagues and/or acquaintances might know to be associated with the user."+
+        "\n-> Do not use passwords which consist wholly of any simple combination of the aforementioned weak components.");
         msg.setLineWrap(true);
+        msg.setMargin(new Insets(5, 3, 5, 3));
         temp.add(msg, BorderLayout.CENTER);
         msg.setEditable(false);
         
@@ -151,13 +162,20 @@ public class Choice_GUI extends JFrame implements ActionListener{
 
         JLabel len = new JLabel("Length: ");
         JSpinner pass_len = new JSpinner();
-        pass_len.setSize(15, HEIGHT);
+        pass_len.setSize(20, HEIGHT);
         pass_len.setValue(0);
+
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener((ae) -> {
+            temp.setVisible(false);
+            fr_ref.setVisible(true);
+        });
         
         JPanel top = new JPanel();
-        top.setLayout(new FlowLayout(FlowLayout.LEFT, 50, 10));
+        top.setLayout(new FlowLayout(FlowLayout.LEFT, 35, 10));
         top.add(len);
         top.add(pass_len);
+        top.add(backButton);
 
         setLayout(new BorderLayout());
 
@@ -177,17 +195,25 @@ public class Choice_GUI extends JFrame implements ActionListener{
         chpanel.add(numb_ch);
         chpanel.add(symb_ch);
         chpanel.setVisible(true);
-        
         temp.add(chpanel, BorderLayout.CENTER);
 
         JPanel statJPanel = new JPanel();
-        statJPanel.setLayout(new GridLayout(1, 2, 25, 0));
+        statJPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
         
         JTextField pass_disp = new JTextField();
-        pass_disp.setSize(100, 20);
         pass_disp.setForeground(Color.black);
-        pass_disp.setEnabled(false);
+        pass_disp.setEditable(false);
+        pass_disp.setPreferredSize(new Dimension(100, 25));
         statJPanel.add(pass_disp);
+
+        JButton copyButton = new JButton("C");
+        copyButton.setPreferredSize(new Dimension(25, 25));
+        copyButton.addActionListener((ae) ->{
+            StringSelection stringSelection = new StringSelection(pass_disp.getText());
+            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            clipboard.setContents(stringSelection, null);
+        });
+        statJPanel.add(copyButton);
 
         JButton genButton = new JButton("Generate");
         genButton.addActionListener((ae)->{
